@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>استمارة الزيارة التبادلية - مدرسة قرطبة الإعدادية للبنات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1b1b1b;
+    --muted:#5a5a5a;
+    --line:#222;
+    --gold:#fff3c4;
+    --gold-strong:#f1d36b;
+    --gray:#ececec;
+    --gray-head:#cfcfcf;
+    --accent:#1d5a8a;
+    --bg:#f2f2f2;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+
+  /* شريط الأدوات */
+  .toolbar{
+    position:sticky; top:0; z-index:10;
+    display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
+    padding:10px 12px; background:#fff; border-bottom:1px solid #ddd;
+  }
+  .toolbar button{
+    font-family:inherit; font-size:15px; font-weight:700;
+    padding:9px 18px; border-radius:8px; border:1px solid var(--accent);
+    background:var(--accent); color:#fff; cursor:pointer;
+  }
+  .toolbar button.secondary{background:#fff; color:var(--accent)}
+  .toolbar button:active{transform:scale(.98)}
+  .hint{
+    max-width:210mm; margin:10px auto 0; padding:0 14px;
+    font-size:13px; color:var(--muted); text-align:center;
+  }
+
+  /* الورقة */
+  .page{
+    width:210mm; max-width:100%;
+    margin:12px auto 24px; padding:10mm 11mm 12mm;
+    background:#fff; box-shadow:0 2px 14px rgba(0,0,0,.12);
+  }
+
+  /* الترويسة */
+  .letterhead{
+    display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:8px;
+    padding-bottom:8px; border-bottom:2px solid var(--line); text-align:center;
+  }
+  .lh-en{direction:ltr; font-family:Georgia,"Times New Roman",serif}
+  .lh-en .small{font-size:9px; letter-spacing:.5px; text-transform:uppercase}
+  .lh-en .big{font-size:18px; line-height:1.2}
+  .lh-en .school{font-size:10px; font-family:Arial,sans-serif; margin-top:2px}
+  .lh-ar .kingdom{font-size:13px; font-weight:700}
+  .lh-ar .ministry{font-size:20px; font-weight:800; line-height:1.2}
+  .lh-ar .school{font-size:13px; font-weight:700; margin-top:2px}
+  .motto{
+    text-align:center; font-size:13px; font-weight:800;
+    padding:5px 0; border-bottom:1px solid var(--line); margin-bottom:14px;
+  }
+
+  .title{
+    background:var(--gold); border:3px solid var(--line);
+    text-align:center; font-size:22px; font-weight:800;
+    padding:9px 6px; margin-bottom:16px;
+  }
+
+  /* حقول البيانات */
+  .meta{display:grid; grid-template-columns:repeat(6,1fr); gap:10px 12px; margin-bottom:14px}
+  .field{display:flex; flex-direction:column; gap:3px; min-width:0}
+  .field label{font-size:14px; font-weight:800}
+  .field input[type=text],
+  .field input[type=number],
+  .field input[type=date]{
+    width:100%; font-family:inherit; font-size:15px; color:var(--ink);
+    border:2px solid var(--line); border-radius:3px; padding:7px 8px;
+    background:#fff; min-height:40px;
+  }
+  .span2{grid-column:span 2} .span3{grid-column:span 3}
+
+  .instr{font-size:15px; font-weight:800; margin:14px 0 10px}
+
+  /* جدول الكفايات */
+  table.comp{width:100%; border-collapse:collapse; border:3px solid var(--line); table-layout:fixed}
+  table.comp th{
+    background:var(--gray-head); font-size:17px; font-weight:800;
+    padding:8px; border:2px solid var(--line);
+  }
+  table.comp td{border:1px solid var(--line); vertical-align:middle; padding:0}
+  td.chk{width:46px; background:var(--gold); text-align:center}
+  td.name{width:44%; background:var(--gray); padding:12px 14px; font-size:14.5px; font-weight:700; line-height:1.9}
+  td.desc{padding:6px}
+  tr.row{break-inside:avoid; page-break-inside:avoid}
+
+  input.box{
+    appearance:none; -webkit-appearance:none;
+    width:26px; height:26px; margin:0; border:2px solid var(--line);
+    border-radius:3px; background:#fff; cursor:pointer; position:relative;
+    vertical-align:middle;
+  }
+  input.box:checked::after{
+    content:"✓"; position:absolute; inset:-4px 0 0 0; text-align:center;
+    font-size:24px; font-weight:800; line-height:30px; color:#0a6b2d;
+  }
+
+  textarea{
+    width:100%; display:block; font-family:inherit; font-size:15px; color:var(--ink);
+    border:1px dashed #b5b5b5; border-radius:3px; padding:8px;
+    resize:none; overflow:hidden; background:#fcfcfc; line-height:1.7;
+  }
+  td.desc textarea{min-height:110px; border:none; background:transparent}
+  textarea:focus,input:focus{outline:2px solid #6aa7d6; outline-offset:0}
+
+  /* الأسئلة */
+  .qs{margin-top:20px; break-inside:avoid; page-break-inside:avoid}
+  .qs .head{font-size:15px; font-weight:800; margin-bottom:8px}
+  .q{display:grid; grid-template-columns:34px 1fr; gap:10px; margin-bottom:10px; align-items:start}
+  .q .n{
+    width:34px; height:34px; border-radius:50%; background:var(--gold-strong);
+    border:2px solid var(--line); display:flex; align-items:center; justify-content:center;
+    font-weight:800;
+  }
+  .q .t{font-size:14.5px; font-weight:700; margin-bottom:4px}
+  .q textarea{min-height:80px; border:2px solid var(--line); background:#fff}
+
+  .footer-note{margin-top:12px; font-size:12px; color:var(--muted); text-align:center}
+
+  /* الهاتف */
+  @media (max-width:700px){
+    .page{margin:8px 0 16px; padding:12px 10px; box-shadow:none}
+    .meta{grid-template-columns:1fr 1fr}
+    .span2,.span3{grid-column:span 2}
+    .title{font-size:19px}
+    .lh-en .big{font-size:15px} .lh-ar .ministry{font-size:17px}
+    table.comp th{font-size:14px; padding:6px 3px}
+    td.chk{width:38px}
+    td.name{width:42%; font-size:12.5px; padding:8px 7px; line-height:1.7}
+    td.desc textarea{min-height:130px; font-size:14px}
+  }
+
+  /* الطباعة */
+  @page{size:A4; margin:8mm}
+  @media print{
+    body{background:#fff}
+    .toolbar,.hint,.footer-note{display:none !important}
+    .page{width:auto; margin:0; padding:0; box-shadow:none}
+    textarea{border:none !important; background:transparent !important; padding:4px}
+    .q textarea{border:1px solid #888 !important}
+    .field input{border:2px solid var(--line) !important}
+    input[type=date]::-webkit-calendar-picker-indicator{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button type="button" id="btnPrint">طباعة / حفظ PDF</button>
+  <button type="button" class="secondary" id="btnClear">مسح البيانات</button>
+</div>
+<p class="hint">املئي الحقول مباشرة، ثم اضغطي «طباعة / حفظ PDF» واختاري «حفظ كـ PDF». يتم حفظ ما تكتبينه تلقائيًا في هذا المتصفح.</p>
+
+<main class="page" id="sheet">
+
+  <header class="letterhead">
+    <div class="lh-ar">
+      <div class="kingdom">مملكة البحرين</div>
+      <div class="ministry">وزارة التربية والتعليم</div>
+      <div class="school">مدرسة قرطبة الإعدادية للبنات</div>
+    </div>
+    <div class="lh-en">
+      <div class="small">Kingdom of Bahrain</div>
+      <div class="big">Ministry of Education</div>
+      <div class="school">QURTOBA INTERMEDIATE GIRLS SCHOOL</div>
+    </div>
+  </header>
+  <div class="motto">قرطبة الإبداع .. تُنشئ الرواد .. تُمكّن الأداء .. لتسمو بالوطن</div>
+
+  <div class="title">استـــمارة الزيـــارة التـــبادلــية</div>
+
+  <section class="meta">
+    <div class="field span3"><label for="teacher">اسم المعلمة:</label><input type="text" id="teacher" data-save></div>
+    <div class="field"><label for="grade">الصف</label><input type="text" id="grade" data-save></div>
+    <div class="field span2"><label for="students">عدد الطالبات</label><input type="number" inputmode="numeric" min="0" id="students" data-save></div>
+
+    <div class="field span2"><label for="subject">المادة</label><input type="text" id="subject" data-save></div>
+    <div class="field span3"><label for="lesson">عنوان الدرس</label><input type="text" id="lesson" data-save></div>
+    <div class="field"><label for="period">الحصة</label><input type="text" id="period" data-save></div>
+
+    <div class="field span2"><label for="vdate">تاريخ الزيارة</label><input type="date" id="vdate" data-save></div>
+    <div class="field span4" style="grid-column:span 4"><label for="visitor">المعلمة الزائرة</label><input type="text" id="visitor" data-save></div>
+  </section>
+
+  <p class="instr">الــرجـاء وضع علامة √ أمام الكفايــة التي استفدتي منها في الحـصـة مع وصـف الاستفادة:</p>
+
+  <table class="comp">
+    <colgroup><col style="width:46px"><col style="width:44%"><col></colgroup>
+    <thead>
+      <tr><th colspan="2">الكفايات</th><th>وصف الاستفادة</th></tr>
+    </thead>
+    <tbody>
+      <tr class="row">
+        <td class="chk"><input class="box" type="checkbox" id="c1" data-save aria-label="إدارة المواقف الصفية"></td>
+        <td class="name">إدارة المواقف الصفية (تضمين الموقف التعليمي إرشادات وتوجيهات واضحة لاستثمار الوقت بما يحقق أهداف التعلم، إثارة دافعية المتعلمين بأساليب تحفيز تُمكّنهم من المشاركة في التعلم)</td>
+        <td class="desc"><textarea id="d1" data-save aria-label="وصف الاستفادة"></textarea></td>
+      </tr>
+      <tr class="row">
+        <td class="chk"><input class="box" type="checkbox" id="c2" data-save aria-label="توظيف إستراتيجيات التعليم والتعلم"></td>
+        <td class="name">توظيف إستراتيجيات تعليم وتعلم مناسبة بطرائق وأساليب مختلفة ومتنوعة</td>
+        <td class="desc"><textarea id="d2" data-save aria-label="وصف الاستفادة"></textarea></td>
+      </tr>
+      <tr class="row">
+        <td class="chk"><input class="box" type="checkbox" id="c3" data-save aria-label="توظيف التكنولوجيا التفاعلية"></td>
+        <td class="name">توظيف التكنولوجيا التفاعلية والأدوات الرقمية والموارد والمصادر التعليمية.</td>
+        <td class="desc"><textarea id="d3" data-save aria-label="وصف الاستفادة"></textarea></td>
+      </tr>
+      <tr class="row">
+        <td class="chk"><input class="box" type="checkbox" id="c4" data-save aria-label="توظيف التقويم ودعم التعلم"></td>
+        <td class="name">توظيف التقويم ودعم التعلم بكافة أنماطه (الاستفادة من نتائج التقويم السابقة في التعرف على مستويات الأداء لدى الطلبة وتصميم أنشطة مناسبة لهم وفق احتياجاتهم التعليمية المختلفة ليحققوا التقدم المتوقع)</td>
+        <td class="desc"><textarea id="d4" data-save aria-label="وصف الاستفادة"></textarea></td>
+      </tr>
+      <tr class="row">
+        <td class="chk"><input class="box" type="checkbox" id="c5" data-save aria-label="تيسير التقدم الأكاديمي للطلبة"></td>
+        <td class="name">تيسير التقدم الأكاديمي للطلبة (تطبيق برامج وأساليب فاعلة لتقييم أداء الطلبة وقياس مدى التعلم الذي حققه المتعلمين أثناء التعلم المتزامن والتعلم غير المتزامن، وتوظيف مهارات داعمة للتعلم وأساليب تقييم مختلفة لمساعدتهم على اكتساب المعارف والمهارات وتقديم الدعم الأكاديمي المناسب لهم)</td>
+        <td class="desc"><textarea id="d5" data-save aria-label="وصف الاستفادة"></textarea></td>
+      </tr>
+      <tr class="row">
+        <td class="chk"><input class="box" type="checkbox" id="c6" data-save aria-label="تيسير تطور الطلبة الشخصي"></td>
+        <td class="name">تيسير تطور الطلبة الشخصي</td>
+        <td class="desc"><textarea id="d6" data-save aria-label="وصف الاستفادة"></textarea></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section class="qs">
+    <div class="head">الــرجـاء الاجابة على الأسئلة التالية بعد الانتهاء من الزيارة:</div>
+
+    <div class="q"><div class="n">1</div><div>
+      <div class="t">ممارسة متميزة أعجبتني في الحصة وأود تطبيقها في حصتي</div>
+      <textarea id="q1" data-save></textarea>
+    </div></div>
+
+    <div class="q"><div class="n">2</div><div>
+      <div class="t">أسئلة أود توجيهها للمعلمة بعد الانتهاء من الزيارة</div>
+      <textarea id="q2" data-save></textarea>
+    </div></div>
+
+    <div class="q"><div class="n">3</div><div>
+      <div class="t">المقترحات والتوصيات</div>
+      <textarea id="q3" data-save></textarea>
+    </div></div>
+  </section>
+
+  <p class="footer-note">نصيحة: على الهاتف افتحي الملف بمتصفح Chrome أو Samsung Internet، وليس من معاينة الواتساب.</p>
+</main>
+
+<script>
+(function(){
+  var KEY = "qurtoba-visit-form-v1";
+  var fields = Array.prototype.slice.call(document.querySelectorAll("[data-save]"));
+  var areas = Array.prototype.slice.call(document.querySelectorAll("textarea"));
+
+  function grow(t){ t.style.height = "auto"; t.style.height = (t.scrollHeight + 2) + "px"; }
+  function growAll(){ areas.forEach(grow); }
+
+  function read(){
+    try{ return JSON.parse(localStorage.getItem(KEY) || "{}"); }catch(e){ return {}; }
+  }
+  function write(obj){
+    try{ localStorage.setItem(KEY, JSON.stringify(obj)); }catch(e){}
+  }
+  function collect(){
+    var o = {};
+    fields.forEach(function(f){ o[f.id] = (f.type === "checkbox") ? f.checked : f.value; });
+    return o;
+  }
+
+  var saved = read();
+  fields.forEach(function(f){
+    if(!(f.id in saved)) return;
+    if(f.type === "checkbox") f.checked = !!saved[f.id]; else f.value = saved[f.id];
+  });
+  growAll();
+
+  fields.forEach(function(f){
+    var ev = (f.type === "checkbox") ? "change" : "input";
+    f.addEventListener(ev, function(){
+      if(f.tagName === "TEXTAREA") grow(f);
+      write(collect());
+    });
+  });
+
+  document.getElementById("btnPrint").addEventListener("click", function(){
+    growAll(); window.print();
+  });
+  document.getElementById("btnClear").addEventListener("click", function(){
+    if(!confirm("هل تريدين مسح كل البيانات المكتوبة؟")) return;
+    fields.forEach(function(f){ if(f.type === "checkbox") f.checked = false; else f.value = ""; });
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    growAll();
+  });
+
+  window.addEventListener("beforeprint", growAll);
+  window.addEventListener("resize", growAll);
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(growAll); }
+})();
+</script>
+</body>
+</html>
